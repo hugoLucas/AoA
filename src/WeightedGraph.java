@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 /**
  *
@@ -8,16 +7,12 @@ import java.util.Random;
 
 class WeightedGraph {
 
-    ArrayList<GraphNode> nodes;
-    ArrayList<GraphConnection> connections;
+    private ArrayList<GraphNode> nodes;
+    private ArrayList<GraphConnection> connections;
 
     WeightedGraph(int nNodes, double connFactor){
         createNodes(nNodes);
         createConnections(connFactor);
-    }
-
-    public void visualizeGraph(){
-
     }
 
     private void createNodes(int nNodes){
@@ -60,6 +55,28 @@ class WeightedGraph {
             index2 = gen.nextInt(nodes.size());
 
         return new int[]{index1, index2};
+    }
+
+    void visualize() {
+        HashMap<GraphNode, Set<GraphNode>> connectionsByNode = new HashMap<>();
+        for (GraphConnection c : this.connections) {
+            GraphNode[] connections = c.getNodes();
+
+            if (!connectionsByNode.containsKey(connections[0]))
+                connectionsByNode.put(connections[0], new HashSet<>());
+            connectionsByNode.get(connections[0]).add(connections[1]);
+
+            if (!connectionsByNode.containsKey(connections[1]))
+                connectionsByNode.put(connections[1], new HashSet<>());
+            connectionsByNode.get(connections[1]).add(connections[0]);
+        }
+
+        for (GraphNode key: connectionsByNode.keySet()){
+            System.out.println("Node: " + key.getNodeId());
+            for (GraphNode conn: connectionsByNode.get(key))
+                System.out.print(conn.getNodeId() + ", ");
+            System.out.println("\n");
+        }
     }
 }
 
